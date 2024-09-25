@@ -6,6 +6,7 @@ import authRouter from "./routes/authRouter.js";
 import reviewRouter from "./routes/reviewRouter.js";
 import Review from "./models/review.js";
 import UserBook from "./models/userBook.js";
+import followRouter from "./routes/followRouter.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/user-books", userBookRouter); // Use the new router
 app.use("/auth", authRouter); // Define the auth routes under /auth
 app.use("/reviews", reviewRouter);
+app.use("/follow", followRouter);
 
 // Sync the models in the correct order
 sequelize.sync({ alter: true }).then(async () => {

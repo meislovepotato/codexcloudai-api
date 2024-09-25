@@ -1,7 +1,12 @@
 // followRouter.js
 import express from "express";
 import { authenticate } from "../middleware/authMiddleware.js";
-
+import {
+  followUser,
+  getFollowers,
+  getFollowing,
+  unfollowUser,
+} from "../controllers/followController.js";
 
 const followRouter = express.Router();
 
