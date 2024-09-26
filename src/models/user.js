@@ -1,7 +1,7 @@
 //user.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/config.js";
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 
 const User = sequelize.define(
   "User",
@@ -15,6 +15,9 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true, // Validates if it's a valid email
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -23,16 +26,6 @@ const User = sequelize.define(
   },
   {
     tableName: "users",
-    hooks: {
-      beforeCreate: async (user) => {
-        user.password = await bcrypt.hash(user.password, 10);
-      },
-      beforeUpdate: async (user) => {
-        if (user.changed("password")) {
-          user.password = await bcrypt.hash(user.password, 10);
-        }
-      },
-    },
   }
 );
 

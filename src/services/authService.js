@@ -1,17 +1,20 @@
 //authService.js
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import argon2 from "argon2";
 
 // Service for user registration
-export const registerUser = async (username, password, role) => {
+export const registerUser = async (username, email, password, role) => {
   try {
     // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await argon2.hash(password);
+
+    console.log("Hashed Password:", hashedPassword);
 
     // Create a new user
     const newUser = await User.create({
       username,
+      email,
       password: hashedPassword,
       role,
     });
@@ -27,12 +30,15 @@ export const loginUser = async (username, password) => {
   try {
     // Find the user by username
     const user = await User.findOne({ where: { username } });
+
+    // Check if user exists
     if (!user) {
       throw new Error("User not found");
     }
 
-    // Compare the password
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Directly compare the passwords
+    const isMatch = await argon2.verify(user.password, password);
+
     if (!isMatch) {
       throw new Error("Invalid credentials");
     }
@@ -40,7 +46,7 @@ export const loginUser = async (username, password) => {
     // Generate a JWT token
     const token = jwt.sign(
       { userId: user.id, role: user.role },
-      process.env.JWT_SECRET, // Store this in your .env file
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 

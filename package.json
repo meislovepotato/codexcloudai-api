@@ -10,7 +10,7 @@
     "seed": "sequelize-cli db:seed:all --config sequelize.config.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "argon2": "^0.41.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "joi": "^17.13.3",
