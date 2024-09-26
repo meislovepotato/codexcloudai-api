@@ -1,6 +1,7 @@
+// 20240910-add-create-user_books.cjs
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("reviews", {
+    await queryInterface.createTable("user_books", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -12,20 +13,18 @@ module.exports = {
           model: "users",
           key: "id",
         },
-      },
-      bookId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "user_books",
-          key: "id",
-        },
-      },
-      content: {
-        type: Sequelize.TEXT,
         allowNull: false,
       },
-      rating: {
-        type: Sequelize.INTEGER,
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      author: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      genre: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
@@ -40,6 +39,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("reviews");
+    await queryInterface.dropTable("user_books");
   },
 };

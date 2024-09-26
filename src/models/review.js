@@ -1,34 +1,45 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/config.js";
-import UserBook from "./userBook.js";
-import User from "./user.js";
+//review.js
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const Review = sequelize.define("Review", {
-  userId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: "users", // Table name
-      key: "id",
+// Define the Review model
+const Review = sequelize.define(
+  'Review',
+  {
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    rating: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+    },
+    bookId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'user_books',
+        key: 'id',
+      },
     },
   },
-  bookId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: "user_books", // Table name
-      key: "id",
-    },
-  },
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  rating: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
+  {
+    tableName: 'reviews',
+  }
+);
 
-Review.belongsTo(User, { foreignKey: "userId" }); // A review belongs to a user
-Review.belongsTo(UserBook, { foreignKey: "bookId" }); // A review belongs to a userBook
+// Association method for Review
+Review.associate = (models) => {
+  Review.belongsTo(models.User, { foreignKey: 'userId' });
+  Review.belongsTo(models.UserBook, { foreignKey: 'bookId' });
+};
 
+// Export the Review model
 export default Review;
+

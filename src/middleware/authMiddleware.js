@@ -1,3 +1,4 @@
+//authMiddleware.js
 import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
@@ -19,7 +20,7 @@ export const authenticate = (req, res, next) => {
 // Role-based access control
 export const authorize = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
+    if (req.user.role.toLowerCase() !== role.toLowerCase()) {
       return res.status(403).json({ error: "Access denied" });
     }
     next();

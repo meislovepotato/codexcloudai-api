@@ -1,19 +1,14 @@
-// src/controllers/reviewController.js
-import Review from "../models/review.js";
-import User from "../models/user.js";
+//reviewController.js
+import { createReview, getReviewsForBook } from "../services/reviewService.js";
 
 // Create a review for a book
-export const createReview = async (req, res) => {
+export const createReviewController = async (req, res) => {
   const { bookId, content, rating } = req.body;
 
   try {
     const userId = req.user.userId; // Extracted from JWT in middleware
-    const newReview = await Review.create({
-      userId,
-      bookId,
-      content,
-      rating,
-    });
+    const newReview = await createReview(userId, bookId, content, rating);
+    res;
 
     res
       .status(201)
@@ -23,19 +18,11 @@ export const createReview = async (req, res) => {
   }
 };
 
-export const getReviews = async (req, res) => {
+export const getReviewsController = async (req, res) => {
   const { bookId } = req.params;
 
   try {
-    const reviews = await Review.findAll({
-      where: { bookId },
-      include: [
-        {
-          model: User, // Include the user who wrote the review
-          attributes: ["id", "username"], // Only include user details like username
-        },
-      ],
-    });
+    const reviews = await getReviewsForBook(bookId);
 
     if (reviews.length === 0) {
       return res

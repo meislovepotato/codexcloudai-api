@@ -1,5 +1,9 @@
+//userBookController.js
 import Joi from "joi";
-import UserBook from "../models/userBook.js";
+import {
+  addCharacterAndBook as addBookService,
+  getAllEntries as getAllEntriesService,
+} from "../services/userBookService.js";
 
 // Define the validation schema using Joi
 const schema = Joi.object({
@@ -17,10 +21,10 @@ const addCharacterAndBook = async (req, res) => {
 
   const { character, book_name } = req.body;
   try {
-    const newEntry = await UserBook.create({ character, book_name });
+    const newEntry = await addBookService(character, book_name);
     res.status(201).json(newEntry);
   } catch (err) {
-    if (err.name === "SequelizeUniqueConstraintError") {
+    if (err instanceof Sequelize.UniqueConstraintError) {
       res.status(400).json({ error: "Entry already exists." });
     } else {
       res.status(500).json({ error: err.message });
@@ -31,29 +35,13 @@ const addCharacterAndBook = async (req, res) => {
 // Fetch all entries from the table
 const getAllEntries = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
-
   // Convert page and limit to numbers
-  const pageNumber = parseInt(page, 10);
-  const pageSize = parseInt(limit, 10);
-
-  // Calculate offset
-  const offset = (pageNumber - 1) * pageSize;
+  const pageNumber = parseInt(page, 10) || 1;
+  const pageSize = parseInt(limit, 10) || 10;
 
   try {
-    const entries = await UserBook.findAll({
-      limit: pageSize,
-      offset: offset,
-    });
-
-    // Get the total number of entries for pagination metadata
-    const totalEntries = await UserBook.count();
-
-    res.json({
-      totalEntries,
-      totalPages: Math.ceil(totalEntries / pageSize),
-      currentPage: pageNumber,
-      entries,
-    });
+    const result = await getAllEntriesService(pageNumber, pageSize);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

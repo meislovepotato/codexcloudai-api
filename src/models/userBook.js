@@ -1,9 +1,10 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/config.js";
+//userBook.js
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 // Define the UserBook model
 const UserBook = sequelize.define(
-  "UserBook",
+  'UserBook',
   {
     character: {
       type: DataTypes.STRING,
@@ -15,15 +16,22 @@ const UserBook = sequelize.define(
     },
   },
   {
-    tableName: "user_books", // The single table where both fields are stored
+    tableName: 'user_books', // The single table where both fields are stored
     timestamps: false,
     indexes: [
       {
         unique: true, // This will enforce uniqueness on the combination of character and book_name
-        fields: ["character", "book_name"],
+        fields: ['character', 'book_name'],
       },
     ],
   }
 );
 
+// Association method for UserBook
+UserBook.associate = (models) => {
+  UserBook.hasMany(models.Review, { foreignKey: 'bookId' });
+};
+
+// Export the UserBook model
 export default UserBook;
+

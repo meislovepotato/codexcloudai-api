@@ -1,18 +1,11 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+//authController.js
+import { loginUser, registerUser } from "../services/authService.js";
 
 export const register = async (req, res) => {
   const { username, password, role } = req.body;
 
   try {
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
-      username,
-      password: hashedPassword,
-      role,
-    });
+    const newUser = await registerUser(username, password, role);
 
     res
       .status(201)
@@ -26,25 +19,9 @@ export const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { username } });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    const { token, user } = await loginUser(username, password);
 
-    // Compare the password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-
-    // Generate a JWT token
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET, // You should store this secret in your .env file
-      { expiresIn: "1h" }
-    );
-
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token, user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

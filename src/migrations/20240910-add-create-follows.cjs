@@ -1,31 +1,26 @@
+// 20240910-add-create-follows.cjs
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("reviews", {
+    await queryInterface.createTable("follows", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+      followerId: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
           key: "id",
         },
-      },
-      bookId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "user_books",
-          key: "id",
-        },
-      },
-      content: {
-        type: Sequelize.TEXT,
         allowNull: false,
       },
-      rating: {
+      followingId: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
         allowNull: false,
       },
       createdAt: {
@@ -40,6 +35,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("reviews");
+    await queryInterface.dropTable("follows");
   },
 };

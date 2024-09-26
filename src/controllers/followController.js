@@ -1,5 +1,5 @@
-import Follow from "../models/follow.js";
-import User from "../models/user.js";
+//followController.js
+import * as followService from "../services/followService.js";
 
 // Follow a user
 export const followUser = async (req, res) => {
@@ -13,17 +13,7 @@ export const followUser = async (req, res) => {
     }
 
     // Check if the follow relationship already exists
-    const existingFollow = await Follow.findOne({
-      where: { followerId, followingId },
-    });
-    if (existingFollow) {
-      return res
-        .status(400)
-        .json({ error: "You are already following this user" });
-    }
-
-    // Create a new follow relationship
-    await Follow.create({ followerId, followingId });
+    await followService.createFollow(followerId, followingId);
 
     res.status(200).json({ message: "User followed successfully" });
   } catch (error) {
@@ -38,13 +28,7 @@ export const unfollowUser = async (req, res) => {
 
   try {
     // Check if the follow relationship exists
-    const follow = await Follow.findOne({ where: { followerId, followingId } });
-    if (!follow) {
-      return res.status(400).json({ error: "You are not following this user" });
-    }
-
-    // Remove the follow relationship
-    await follow.destroy();
+    await followService.removeFollow(followerId, followingId);
 
     res.status(200).json({ message: "User unfollowed successfully" });
   } catch (error) {
@@ -57,17 +41,9 @@ export const getFollowers = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findByPk(userId, {
-      include: [
-        { model: User, as: "Followers", attributes: ["id", "username"] },
-      ],
-    });
+    const followers = await followService.getUserFollowers(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.status(200).json({ followers: user.Followers });
+    res.status(200).json({ followers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -78,17 +54,9 @@ export const getFollowing = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findByPk(userId, {
-      include: [
-        { model: User, as: "Following", attributes: ["id", "username"] },
-      ],
-    });
+    const following = await followService.getUserFollowing(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.status(200).json({ following: user.Following });
+    res.status(200).json({ following });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
