@@ -13,7 +13,7 @@ const Follow = sequelize.define(
         key: "id",
       },
     },
-    followedId: {
+    followingId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -30,7 +30,8 @@ const Follow = sequelize.define(
 
 Follow.associate = (models) => {
   Follow.belongsTo(models.User, { foreignKey: "followerId", as: "follower" });
-  Follow.belongsTo(models.User, { foreignKey: "followedId", as: "followed" });
+  Follow.belongsTo(models.User, { foreignKey: "followingId", as: "following" });
 };
+
 
 export default Follow;

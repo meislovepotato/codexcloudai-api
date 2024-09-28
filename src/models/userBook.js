@@ -1,37 +1,43 @@
 //userBook.js
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/config.js';
+import { DataTypes } from "sequelize";
+import sequelize from "../config/config.js";
 
 // Define the UserBook model
 const UserBook = sequelize.define(
-  'UserBook',
+  "UserBook",
   {
-    character: {
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    book_name: {
+    author: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    genre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    character: {
+      type: DataTypes.STRING, // Character field
+      allowNull: true, // Allow it to be nullable if not all books have characters
     },
   },
   {
-    tableName: 'user_books', // The single table where both fields are stored
-    timestamps: false,
-    indexes: [
-      {
-        unique: true, // This will enforce uniqueness on the combination of character and book_name
-        fields: ['character', 'book_name'],
-      },
-    ],
+    tableName: "user_books",
+    timestamps: true, // Add timestamps
   }
 );
 
 // Association method for UserBook
 UserBook.associate = (models) => {
-  UserBook.hasMany(models.Review, { foreignKey: 'bookId' });
+  UserBook.belongsTo(models.User, { foreignKey: "userId" });
+  UserBook.hasMany(models.Review, { foreignKey: "bookId" });
 };
 
 // Export the UserBook model
 export default UserBook;
-

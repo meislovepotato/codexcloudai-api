@@ -1,7 +1,6 @@
-//user.js
+// user.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/config.js";
-import argon2 from "argon2";
 
 const User = sequelize.define(
   "User",
@@ -23,6 +22,16 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.ENUM("user", "admin", "moderator"), // Define roles explicitly
+      allowNull: false,
+      defaultValue: "user", // Default role
+    },
+    status: {
+      type: DataTypes.ENUM("active", "banned", "inactive"), // Define status explicitly
+      allowNull: false,
+      defaultValue: "active", // Default status
+    },
   },
   {
     tableName: "users",
@@ -31,7 +40,7 @@ const User = sequelize.define(
 
 User.associate = (models) => {
   User.hasMany(models.Review, { foreignKey: "userId" });
-  User.hasMany(models.Follow, { foreignKey: "followerId", as: "followers" });
+  User.hasMany(models.Follow, { foreignKey: "followingId", as: "followers" });
   User.hasMany(models.Follow, {
     foreignKey: "followedId",
     as: "followedUsers",

@@ -1,3 +1,4 @@
+// index.js
 import express from "express";
 import dotenv from "dotenv";
 import userBookRouter from "./routes/userBookRouter.js";
@@ -24,7 +25,8 @@ app.use("/reviews", reviewRouter);
 app.use("/follow", followRouter);
 
 // Sync the models in the correct order
-sequelize.sync()
+sequelize
+  .sync()
   .then(async () => {
     console.log("Database synchronized");
 

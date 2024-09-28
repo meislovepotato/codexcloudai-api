@@ -4,11 +4,14 @@ import {
   addCharacterAndBook as addBookService,
   getAllEntries as getAllEntriesService,
 } from "../services/userBookService.js";
+import { Sequelize } from "sequelize";
 
 // Define the validation schema using Joi
 const schema = Joi.object({
-  character: Joi.string().min(3).required(), // character must be a string with a minimum length of 3
-  book_name: Joi.string().required(), // book_name must be a string and is required
+  title: Joi.string().required(), // Title is required
+  author: Joi.string().required(), // Author is required
+  genre: Joi.string().required(), // Genre is required
+  character: Joi.string().allow(null, ""), // Character can be empty
 });
 
 // Add a new character and book to the same table
@@ -19,9 +22,17 @@ const addCharacterAndBook = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { character, book_name } = req.body;
+  const { title, author, genre, character } = req.body;
+  const userId = req.user.userId; // Extract userId from the token
+
   try {
-    const newEntry = await addBookService(character, book_name);
+    const newEntry = await addBookService(
+      userId,
+      title,
+      author,
+      genre,
+      character
+    );
     res.status(201).json(newEntry);
   } catch (err) {
     if (err instanceof Sequelize.UniqueConstraintError) {
@@ -32,19 +43,20 @@ const addCharacterAndBook = async (req, res) => {
   }
 };
 
-// Fetch all entries from the table
-const getAllEntries = async (req, res) => {
+// Fetch books
+const getUserBooks = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
-  // Convert page and limit to numbers
+  const userId = req.user.userId; // Get userId from the token
+
   const pageNumber = parseInt(page, 10) || 1;
   const pageSize = parseInt(limit, 10) || 10;
 
   try {
-    const result = await getAllEntriesService(pageNumber, pageSize);
+    const result = await getAllEntriesService(userId, pageNumber, pageSize); // Pass userId to service
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export { addCharacterAndBook, getAllEntries };
+export { addCharacterAndBook, getUserBooks };

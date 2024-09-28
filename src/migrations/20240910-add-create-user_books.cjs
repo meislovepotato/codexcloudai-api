@@ -27,6 +27,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      character: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("NOW()"),
