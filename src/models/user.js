@@ -39,13 +39,23 @@ const User = sequelize.define(
 );
 
 User.associate = (models) => {
-  User.hasMany(models.Review, { foreignKey: "userId" });
-  User.hasMany(models.Follow, { foreignKey: "followingId", as: "followers" });
+  // User has many reviews
+  User.hasMany(models.Review, { foreignKey: "userId", as: "reviews" });
+
+  // User can follow many users
   User.hasMany(models.Follow, {
-    foreignKey: "followedId",
-    as: "followedUsers",
+    foreignKey: "followerId",
+    as: "followers", 
   });
-  User.hasMany(models.UserBook, { foreignKey: "userId" });
+
+  // User can be followed by many users
+  User.hasMany(models.Follow, {
+    foreignKey: "followingId",
+    as: "following", 
+  });
+
+  // User can have many user books
+  User.hasMany(models.UserBook, { foreignKey: "userId", as: "userBooks" });
 };
 
 export default User;

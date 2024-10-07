@@ -1,27 +1,27 @@
 //userService.js
 import User from "../models/user.js";
 import Review from "../models/review.js";
+import { getUserFollowers, getUserFollowing } from "./followService.js";
 
 export const getUserProfileById = async (userId) => {
   try {
-    const user = await User.findByPk(userId, {
-      attributes: ["id", "username", "role"], // Exclude sensitive info like password
-      include: [
-        { model: Review }, // Include the reviews the user has written
-        {
-          model: User,
-          as: "Following", // Users they are following
-          attributes: ["id", "username"],
-        },
-        {
-          model: User,
-          as: "Followers", // Users who are following this user
-          attributes: ["id", "username"],
-        },
-      ],
+    const user = await User.findOne({
+      where: { id: userId },
+      attributes: ["id", "username"], // Exclude sensitive info like password
+      include: [{ model: Review, as: "reviews" }],
+      raw: true,
     });
+    //{ username: string, Review: {sadfsadfcasdf}}
 
-    return user; // Return the user object
+    const Followers = await getUserFollowers(userId);
+    //[{id, username}, {id, username}]
+    const Following = await getUserFollowing(userId);
+    // [{id, username}, {id, username}]
+
+    const completeDataUser = { ...user, Followers, Following };
+    //{ username: string, Review: {sadfsadfcasdf}, Followers: [{id, username}, {id, username}], Following: [{id, username}, {id, username}]}
+
+    return user, completeDataUser; // Return the user object
   } catch (error) {
     throw new Error(error.message); // Handle errors appropriately
   }

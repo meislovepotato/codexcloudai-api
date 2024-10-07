@@ -29,9 +29,8 @@ const Follow = sequelize.define(
 );
 
 Follow.associate = (models) => {
-  Follow.belongsTo(models.User, { foreignKey: "followerId", as: "follower" });
+  Follow.belongsTo(models.User, { foreignKey: "followerId", as: "followers" });
   Follow.belongsTo(models.User, { foreignKey: "followingId", as: "following" });
 };
-
 
 export default Follow;

@@ -27,26 +27,32 @@ export const removeFollow = async (followerId, followingId) => {
 
 // Get followers of a user
 export const getUserFollowers = async (userId) => {
-  const user = await User.findByPk(userId, {
-    include: [{ model: User, as: "Followers", attributes: ["id", "username"] }],
+  const followers = await Follow.findAll({
+    where: {
+      followingId: userId,
+    },
+    include: [{ model: User, as: "followers", attributes: ["id", "username"] }],
   });
 
-  if (!user) {
-    throw new Error("User not found");
+  if (!followers) {
+    throw new Error("No followers found");
   }
 
-  return user.Followers;
+  return followers;
 };
 
 // Get users a user is following
 export const getUserFollowing = async (userId) => {
-  const user = await User.findByPk(userId, {
-    include: [{ model: User, as: "Following", attributes: ["id", "username"] }],
+  const following = await Follow.findAll({
+    where: { 
+      followerId: userId 
+    },
+    include: [{ model: User, as: "following", attributes: ["id", "username"] }],
   });
 
-  if (!user) {
-    throw new Error("User not found");
+  if (!following) {
+    throw new Error("No following found");
   }
 
-  return user.Following;
+  return following;
 };
