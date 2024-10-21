@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import argon2 from "argon2";
+import { Op } from "sequelize";
 
 // Service for user registration
 export const registerUser = async (username, email, password, role) => {
@@ -26,10 +27,12 @@ export const registerUser = async (username, email, password, role) => {
 };
 
 // Service for user login
-export const loginUser = async (username, password) => {
+export const loginUser = async (identifier, password) => {
   try {
-    // Find the user by username
-    const user = await User.findOne({ where: { username } });
+    // Find the user by username or email
+    const user = await User.findOne({
+      where: { [Op.or]: [{ username: identifier }, { email: identifier }] },
+    });
 
     // Check if user exists
     if (!user) {

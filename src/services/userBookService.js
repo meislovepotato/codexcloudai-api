@@ -24,31 +24,15 @@ export const addCharacterAndBook = async (
 };
 
 // Fetch all entries from the table with pagination
-export const getAllEntries = async (userId, pageNumber, pageSize) => {
+export const getAllEntries = async (userId) => {
+ 
   try {
-    const offset = (pageNumber - 1) * pageSize;
-    const entries = await UserBook.findAll({
-      where: { userId }, // Filter by userId
-      limit: pageSize,
-      offset: offset,
-      include: [
-        {
-          model: Review, // Include reviews for each book
-          required: false, // Set to false to allow books without reviews
-        },
-      ],
-    });
-    const totalEntries = await UserBook.count({ where: { userId } }); // Count entries for this user
-    console.log(user);
+    const allBooks = await UserBook.findAll({
+      where: {id: userId}
+    })
 
     return {
-      totalEntries,
-      totalPages: Math.ceil(totalEntries / pageSize),
-      currentPage: pageNumber,
-      entries: entries.map((entry) => ({
-        ...entry.toJSON(),
-        review: entry.Reviews.length ? entry.Reviews : null, // Return null if no reviews
-      })),
+      
     };
   } catch (error) {
     throw error;

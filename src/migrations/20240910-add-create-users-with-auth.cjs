@@ -21,11 +21,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: "user", // You can use "admin" or "moderator" for other roles
-      },
       status: {
         type: Sequelize.STRING,
         allowNull: false,

@@ -4,7 +4,7 @@ import User from "../models/user.js";
 import { loginUser, registerUser } from "../services/authService.js";
 
 export const register = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { username, email, password } = req.body;
 
   console.log("Request Body:", req.body); // Log the request body
 
@@ -46,7 +46,7 @@ export const register = async (req, res) => {
     }
 
     // Call to register the user (assuming `registerUser` handles user creation)
-    const newUser = await registerUser(username, email, password, role);
+    const newUser = await registerUser(username, email, password);
 
     // Respond with success if user creation is successful
     res.status(201).json({
@@ -55,7 +55,6 @@ export const register = async (req, res) => {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
-        role: newUser.role,
       },
     });
   } catch (error) {
@@ -79,10 +78,10 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { identifier, password } = req.body;
 
   try {
-    const { token, user } = await loginUser(username, password);
+    const { token, user } = await loginUser(identifier, password);
 
     // Log user and token for debugging
     console.log("User:", user);

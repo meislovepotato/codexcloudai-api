@@ -11,11 +11,19 @@ import User from "./models/user.js"; // Correct import for User
 import Follow from "./models/follow.js"; // Make sure to import Follow
 import followRouter from "./routes/followRouter.js";
 import userRouter from "./routes/userRouter.js";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 const PORT = 5000;
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from your frontend
+    credentials: true, // Allow credentials (like cookies or authorization headers)
+  })
+);
 
 app.use(express.json());
 app.use("/user-books", userBookRouter); // Use the new router
