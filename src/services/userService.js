@@ -1,6 +1,5 @@
 //userService.js
 import User from "../models/user.js";
-import Review from "../models/review.js";
 import { getUserFollowers, getUserFollowing } from "./followService.js";
 
 export const getUserProfileById = async (userId) => {
@@ -8,7 +7,7 @@ export const getUserProfileById = async (userId) => {
     const user = await User.findOne({
       where: { id: userId },
       attributes: ["id", "username"], // Exclude sensitive info like password
-      include: [{ model: Review, as: "reviews" }],
+      // include: [{ model: Review, as: "reviews" }],
       raw: true,
     });
     //{ username: string, Review: {sadfsadfcasdf}}

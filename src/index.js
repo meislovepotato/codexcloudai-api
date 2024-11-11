@@ -1,17 +1,17 @@
 // index.js
 import express from "express";
 import dotenv from "dotenv";
-import userBookRouter from "./routes/userBookRouter.js";
 import sequelize from "./config/config.js";
 import authRouter from "./routes/authRouter.js";
-import reviewRouter from "./routes/reviewRouter.js";
-import Review from "./models/review.js";
-import UserBook from "./models/userBook.js";
 import User from "./models/user.js"; // Correct import for User
 import Follow from "./models/follow.js"; // Make sure to import Follow
 import followRouter from "./routes/followRouter.js";
 import userRouter from "./routes/userRouter.js";
+import postRouter from "./routes/postRouter.js"
 import cors from "cors";
+
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
@@ -25,11 +25,29 @@ app.use(
   })
 );
 
+// Swagger setup
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "CodexCloud Authentication API",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+const specs = swaggerJsdoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use(express.json());
-app.use("/user-books", userBookRouter); // Use the new router
 app.use("/auth", authRouter); // Define the auth routes under /auth
+app.use("/api", postRouter);
 app.use("/profile", userRouter);
-app.use("/reviews", reviewRouter);
 app.use("/follow", followRouter);
 
 // Sync the models in the correct order
@@ -39,10 +57,8 @@ sequelize
     console.log("Database synchronized");
 
     // Initialize associations after syncing
-    const models = { User, UserBook, Review, Follow }; // Create a models object
+    const models = { User, Follow }; // Create a models object
     User.associate(models);
-    UserBook.associate(models);
-    Review.associate(models);
     Follow.associate(models); // Ensure Follow model associations are initialized
 
     // Start the server only after the models are synced

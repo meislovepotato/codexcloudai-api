@@ -4,57 +4,42 @@ import User from "../models/user.js";
 import argon2 from "argon2";
 import { Op } from "sequelize";
 
-// Service for user registration
-export const registerUser = async (username, email, password, role) => {
+export const registerUser = async (username, email, password) => {
+  // Check if email or username is already in use
+  const existingUser = await User.findOne({
+    where: { [Op.or]: [{ email }, { username }] },
+  });
+  if (existingUser) {
+    const errorMsg = existingUser.email === email
+      ? "Email is already in use"
+      : "Username is already in use";
+    throw new Error(errorMsg);
+  }
+  
+  // Hash the password before saving
+  const hashedPassword = await argon2.hash(password);
   try {
-    // Hash the password before saving
-    const hashedPassword = await argon2.hash(password);
-
-    console.log("Hashed Password:", hashedPassword);
-
     // Create a new user
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-      role,
-    });
-
-    return newUser;
+    return await User.create({ username, email, password: hashedPassword });
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error("Error creating user: " + error.message);
   }
 };
 
-// Service for user login
 export const loginUser = async (identifier, password) => {
-  try {
-    // Find the user by username or email
-    const user = await User.findOne({
-      where: { [Op.or]: [{ username: identifier }, { email: identifier }] },
-    });
-
-    // Check if user exists
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    // Directly compare the passwords
-    const isMatch = await argon2.verify(user.password, password);
-
-    if (!isMatch) {
-      throw new Error("Invalid credentials");
-    }
-
-    // Generate a JWT token
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    return { token, user };
-  } catch (error) {
-    throw new Error(error.message);
+  const user = await User.findOne({
+    where: { [Op.or]: [{ username: identifier }, { email: identifier }] },
+  });
+  // identify if the user or password is wrong
+  if (!user || !(await argon2.verify(user.password, password))) {
+    throw new Error("Invalid credentials");
   }
+
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  return { token, user };
 };
