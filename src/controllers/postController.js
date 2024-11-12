@@ -1,11 +1,12 @@
 import {
   createPostService,
+  deletePostService,
   getAllPostsService,
   getUserPostsService,
 } from "../services/postService.js";
 
 export const createPost = async (req, res) => {
-  const userId = req.user.userId; // Assumes the user ID is in req.user
+  const userId = req.user.userId;
   const { content } = req.body;
 
   if (!content) {
@@ -39,5 +40,17 @@ export const getUserPosts = async (req, res) => {
     res
       .status(500)
       .json({ error: "Error fetching user posts: " + error.message });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  const userId = req.user.userId;
+  const { postId } = req.params;
+
+  try {
+    await deletePostService(postId, userId);
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

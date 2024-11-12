@@ -51,6 +51,8 @@ User.associate = (models) => {
     foreignKey: "followingId",
     as: "following", 
   });
+  
+  User.hasMany(models.Post, { foreignKey: "userId", as: "posts" });
 };
 
 export default User;
