@@ -16,6 +16,7 @@ const Post = sequelize.define("Post", {
 
 Post.associate = (models) => {
   Post.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+  Post.hasMany(models.Like, { foreignKey: "postId", as: "likes" });
 };
 
 export default Post;
