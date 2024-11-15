@@ -1,4 +1,5 @@
 import sequelize from "../config/config.js";
+import Comment from "../models/comment.js";
 import Like from "../models/like.js";
 import Post from "../models/post.js";
 import User from "../models/user.js";
@@ -10,6 +11,7 @@ export const createPostService = async (userId, content) => {
 export const getAllPostsService = async () => {
   return await Post.findAll({
     attributes: [
+      "id",
       "userId",
       "content",
       [sequelize.fn("COUNT", sequelize.col("likes.id")), "likeCount"],
@@ -17,8 +19,9 @@ export const getAllPostsService = async () => {
     include: [
       { model: User, as: "user", attributes: ["id", "username"] },
       { model: Like, as: "likes", attributes: [] }, // Include likes for counting
+      { model: Comment, as: "comments", attributes: ["id", "content", "userId"] },
     ],
-    group: ["Post.id", "user.id"] // Grouping by Post and User to avoid duplicate entries
+    group: ["Post.id", "user.id", "comments.id"] // Grouping by Post and User to avoid duplicate entries
   });
 };
 
@@ -26,15 +29,17 @@ export const getUserPostsService = async (userId) => {
   return await Post.findAll({
     where: { userId },
     attributes: [
+      "id",
       "userId",
       "content",
       [sequelize.fn("COUNT", sequelize.col("likes.id")), "likeCount"]
     ],
     include: [
       { model: User, as: "user", attributes: ["id", "username"] },
-      { model: Like, as: "likes", attributes: [] }
+      { model: Like, as: "likes", attributes: [] },
+      { model: Comment, as: "comments", attributes: ["id", "content", "userId"] },
     ],
-    group: ["Post.id", "user.id"]
+    group: ["Post.id", "user.id", "comments.id"]
   });
 };
 

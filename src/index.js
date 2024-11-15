@@ -10,12 +10,14 @@ import User from "./models/user.js"; // Correct import for User
 import Follow from "./models/follow.js"; // Make sure to import Follow
 import Post from "./models/post.js";
 import Like from "./models/like.js";
+import Comment from "./models/comment.js";
 
 import authRouter from "./routes/authRouter.js";
 import followRouter from "./routes/followRouter.js";
 import userRouter from "./routes/userRouter.js";
 import postRouter from "./routes/postRouter.js"
 import likeRouter from "./routes/likeRouter.js";
+import commentRouter from "./routes/commentRouter.js";
 
 
 dotenv.config();
@@ -55,6 +57,7 @@ app.use("/api", postRouter);
 app.use("/like", likeRouter);
 app.use("/profile", userRouter);
 app.use("/follow", followRouter);
+app.use("/comments", commentRouter);
 
 // Sync the models in the correct order
 sequelize
@@ -63,11 +66,12 @@ sequelize
     console.log("Database synchronized");
 
     // Initialize associations after syncing
-    const models = { User, Follow, Post, Like}; // Create a models object
+    const models = { User, Follow, Post, Like, Comment}; // Create a models object
     User.associate(models);
     Follow.associate(models); // Ensure Follow model associations are initialized
     Post.associate(models); 
     Like.associate(models); 
+    Comment.associate(models);
 
     // Start the server only after the models are synced
     app.listen(PORT, () => {
