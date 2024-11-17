@@ -42,14 +42,15 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: "api-docs",
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./src/routes/*.js"],
 };
 const specs = swaggerJsdoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/", swaggerUi.serve);
+app.get("/", swaggerUi.setup(specs));
 
 app.use(express.json());
 app.use("/auth", authRouter); // Define the auth routes under /auth

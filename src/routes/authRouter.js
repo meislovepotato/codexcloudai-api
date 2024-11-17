@@ -6,7 +6,7 @@ const authRouter = express.Router();
 
 /**
  * @swagger
- * /routes/register:
+ * /auth/register:
  *   post:
  *     summary: Registers a new user with username, email, and password
  *     tags: 
@@ -36,7 +36,6 @@ const authRouter = express.Router();
  *       500:
  *         description: Internal server error
  */
-
 authRouter.post("/register", register);
 
 authRouter.post("/login", login);
