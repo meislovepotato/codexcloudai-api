@@ -1,3 +1,4 @@
+//postService.js
 import sequelize from "../config/config.js";
 import Comment from "../models/comment.js";
 import Like from "../models/like.js";

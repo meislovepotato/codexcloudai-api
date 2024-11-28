@@ -1,3 +1,4 @@
+//postController.js
 import {
   createPostService,
   deletePostService,

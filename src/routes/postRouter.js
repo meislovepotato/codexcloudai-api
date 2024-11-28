@@ -1,3 +1,4 @@
+//postRouter.js
 import express from "express";
 import { createPost, deletePost, getAllPosts, getUserPosts } from "../controllers/postController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
