@@ -37,7 +37,6 @@ const authRouter = express.Router();
  *         description: Internal server error
  */
 authRouter.post("/register", register);
-
 authRouter.post("/login", login);
 
 export default authRouter;
