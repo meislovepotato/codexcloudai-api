@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
-  const token = req.headers["authorization"];
+  const token = req.headers["authorization"]?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "No token provided" });
@@ -13,6 +13,7 @@ export const authenticate = (req, res, next) => {
     req.user = decoded; // Attach the user data to the request object
     next();
   } catch (error) {
+    console.error("Token verification failed:", error);
     res.status(403).json({ error: "Invalid token" });
   }
 };

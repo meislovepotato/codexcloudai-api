@@ -42,8 +42,8 @@ export const login = async (req, res) => {
     const { token, user } = await loginUser(identifier, password);
 
     // Log user and token for debugging
-    console.log("User:", user);
-    console.log("Token:", token);
+    // console.log("User:", user);
+    // console.log("Token:", token);
 
     res.json({ message: "Login successful", token, user });
   } catch (error) {
