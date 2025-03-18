@@ -1,4 +1,3 @@
-//config.js
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
@@ -13,8 +12,15 @@ const sequelize = new Sequelize(
     dialect: process.env.DB_DIALECT || "postgres",
     port: process.env.DB_PORT || 5432,
     logging: process.env.NODE_ENV === "development",
+
+    // Ensure SSL for Neon Database
+    dialectOptions: {
+      ssl: process.env.DB_SSL === "true"
+        ? { require: true, rejectUnauthorized: false }
+        : false,
+    },
   }
 );
 
-console.log(`Connecting to database with user: ${process.env.DB_USER}`);
+console.log(`🌐 Connecting to database with user: ${process.env.DB_USER}`);
 export default sequelize;
