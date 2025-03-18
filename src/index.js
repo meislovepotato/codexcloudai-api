@@ -1,4 +1,3 @@
-// index.js
 import express from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/config.js";
@@ -6,8 +5,8 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 
-import User from "./models/user.js"; // Correct import for User
-import Follow from "./models/follow.js"; // Make sure to import Follow
+import User from "./models/user.js";
+import Follow from "./models/follow.js";
 import Post from "./models/post.js";
 import Like from "./models/like.js";
 import Comment from "./models/comment.js";
@@ -27,8 +26,8 @@ const PORT = 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // Allow requests from your frontend
-    credentials: true, // Allow credentials (like cookies or authorization headers)
+    origin: "http://localhost:3000", 
+    credentials: true, 
   })
 );
 
@@ -53,14 +52,13 @@ app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(specs));
 
 app.use(express.json());
-app.use("/auth", authRouter); // Define the auth routes under /auth
+app.use("/auth", authRouter); 
 app.use("/api", postRouter);
 app.use("/like", likeRouter);
 app.use("/profile", userRouter);
 app.use("/follow", followRouter);
 app.use("/comments", commentRouter);
 
-// Sync the models in the correct order
 sequelize
   .sync()
   .then(async () => {

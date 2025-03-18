@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "migrate": "sequelize-cli db:migrate --config sequelize.config.js",
     "seed": "sequelize-cli db:seed:all --config sequelize.config.js"
   },
