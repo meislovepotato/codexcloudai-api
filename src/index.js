@@ -26,6 +26,8 @@ const PORT = 5000;
 
 app.use(
   cors({
+    origin: 'https://codexcloud.vercel.app/',
+    credentials: true,
     origin: "http://localhost:3000",
     credentials: true,
   })
