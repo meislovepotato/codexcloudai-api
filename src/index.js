@@ -24,22 +24,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-const allowedOrigins = ["https://codexcloud.vercel.app"];
+// const allowedOrigins = ["https://codexcloud.vercel.app"];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
+  // cors({
+  //   origin: (origin, callback) => {
+  //     if (allowedOrigins.includes(origin) || !origin) {
+  //       callback(null, true);
+  //     } else {
+  //       callback(new Error("Not allowed by CORS"));
+  //     }
+  //   },
+  //   credentials: true,
+  //   methods: ["GET", "POST", "PUT", "DELETE"],
+  //   allowedHeaders: ["Content-Type", "Authorization"],
+  // })
+// );
 
 // Swagger setup
 const options = {
