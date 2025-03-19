@@ -22,7 +22,7 @@ import statusRouter from "./routes/statusRouter.js";
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT;
 
 const allowedOrigins = ["https://codexcloud.vercel.app"];
 
