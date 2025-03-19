@@ -24,9 +24,7 @@ dotenv.config();
 const app = express();
 const PORT = 5000;
 
-const allowedOrigins = [
-  "https://codexcloud.vercel.app", 
-];
+const allowedOrigins = ["https://codexcloud.vercel.app"];
 
 app.use(
   cors({
@@ -70,7 +68,7 @@ app.use("/like", likeRouter);
 app.use("/profile", userRouter);
 app.use("/follow", followRouter);
 app.use("/comments", commentRouter);
-app.use("/status", statusRouter);
+app.use("/api", statusRouter);
 
 sequelize
   .sync()
