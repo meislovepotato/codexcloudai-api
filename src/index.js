@@ -24,9 +24,19 @@ dotenv.config();
 const app = express();
 const PORT = 5000;
 
+const allowedOrigins = [
+  "https://codexcloud.vercel.app", 
+];
+
 app.use(
   cors({
-    origin: 'https://codexcloud.vercel.app',
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
