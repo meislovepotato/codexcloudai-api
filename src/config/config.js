@@ -1,20 +1,20 @@
-//config.js
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT || "postgres",
-    port: process.env.DB_PORT || 5432,
-    logging: process.env.NODE_ENV === "development",
-  }
-);
+// Create a Sequelize instance using the DATABASE_URL
+const sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: "postgres",
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true, // Ensure SSL for Neon/Postgres cloud
+      rejectUnauthorized: false,
+    },
+  },
+});
 
-console.log(`Connecting to database with user: ${process.env.DB_USER}`);
+console.log(`🌐 Connecting to database: ${process.env.DB_URL}`);
+
 export default sequelize;
