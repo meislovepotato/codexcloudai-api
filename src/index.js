@@ -15,10 +15,9 @@ import Comment from "./models/comment.js";
 import authRouter from "./routes/authRouter.js";
 import followRouter from "./routes/followRouter.js";
 import userRouter from "./routes/userRouter.js";
-import postRouter from "./routes/postRouter.js"
+import postRouter from "./routes/postRouter.js";
 import likeRouter from "./routes/likeRouter.js";
 import commentRouter from "./routes/commentRouter.js";
-
 
 dotenv.config();
 
@@ -42,15 +41,14 @@ const options = {
     },
     servers: [
       {
-        url: "api-docs",
+        url: "http://localhost:5000",
       },
     ],
   },
   apis: ["./src/routes/*.js"],
 };
 const specs = swaggerJsdoc(options);
-app.use("/", swaggerUi.serve);
-app.get("/", swaggerUi.setup(specs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(express.json());
 app.use("/auth", authRouter); // Define the auth routes under /auth
@@ -67,11 +65,11 @@ sequelize
     console.log("Database synchronized");
 
     // Initialize associations after syncing
-    const models = { User, Follow, Post, Like, Comment}; // Create a models object
+    const models = { User, Follow, Post, Like, Comment }; // Create a models object
     User.associate(models);
     Follow.associate(models); // Ensure Follow model associations are initialized
-    Post.associate(models); 
-    Like.associate(models); 
+    Post.associate(models);
+    Like.associate(models);
     Comment.associate(models);
 
     // Start the server only after the models are synced
